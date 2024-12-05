@@ -1,10 +1,13 @@
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::{
+    collections::{BinaryHeap, HashMap, HashSet},
+    fs::File,
+    io::{BufRead, BufReader},
+};
+
 use adv_code_2024::*;
 use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 
 const DAY: &str = "01"; // TODO: Fill the day
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
@@ -24,7 +27,7 @@ fn main() -> Result<()> {
     //region Part 1
     println!("=== Part 1 ===");
 
-    fn parse<R:BufRead>(reader: R) -> (BinaryHeap<u64>, BinaryHeap<u64>) {
+    fn parse<R: BufRead>(reader: R) -> (BinaryHeap<u64>, BinaryHeap<u64>) {
         // TODO: Solve Part 1 of the puzzle
         // let answer = reader.lines().flatten().count();
         let mut left = std::collections::BinaryHeap::with_capacity(1000);
@@ -39,7 +42,6 @@ fn main() -> Result<()> {
             right.push(temp[1]);
         }
         (left, right)
-
     }
     fn part1<R: BufRead>(reader: R) -> Result<usize> {
         // TODO: Solve Part 1 of the puzzle
@@ -75,10 +77,9 @@ fn main() -> Result<()> {
             if y == prev_value {
                 count += 1;
                 if right.is_empty() {
-                    right_map.insert(prev_value, count);}
-
-            }
-            else {
+                    right_map.insert(prev_value, count);
+                }
+            } else {
                 right_map.insert(prev_value, count);
                 count = 1;
                 prev_value = y;
@@ -86,7 +87,6 @@ fn main() -> Result<()> {
         }
         // println!("right_map = {:#?}", right_map);
         while let Some(x) = left.pop() {
-
             if let Some(y) = right_map.get(&x) {
                 res += x * y;
             }

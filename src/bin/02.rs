@@ -1,10 +1,13 @@
-use std::collections::HashSet;
+use std::{
+    collections::HashSet,
+    fs::File,
+    io::{BufRead, BufReader},
+};
+
 use adv_code_2024::*;
 use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 
 const DAY: &str = "02"; // TODO: Fill the day
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
@@ -24,7 +27,7 @@ fn main() -> Result<()> {
     //region Part 1
     println!("=== Part 1 ===");
 
-    fn parse<R:BufRead>(reader: R) -> Vec<Vec<i64>> {
+    fn parse<R: BufRead>(reader: R) -> Vec<Vec<i64>> {
         let mut res = Vec::with_capacity(1000);
         for line in reader.lines().flatten() {
             let temp: Vec<i64> = line
@@ -38,15 +41,15 @@ fn main() -> Result<()> {
 
     fn part1<R: BufRead>(reader: R) -> Result<usize> {
         let all_negative: HashSet<i64> = HashSet::from_iter(vec![-1i64, -2, -3].into_iter());
-        let all_positive: HashSet<i64> = HashSet::from_iter(vec![1i64,2,3].into_iter());
+        let all_positive: HashSet<i64> = HashSet::from_iter(vec![1i64, 2, 3].into_iter());
 
-        let mut res:usize = 0;
+        let mut res: usize = 0;
         for line in parse(reader) {
-            let temp: HashSet<i64>= line.windows(2).map(|x| x[0]-x[1] ).collect();
+            let temp: HashSet<i64> = line.windows(2).map(|x| x[0] - x[1]).collect();
             if temp.is_subset(&all_negative) | temp.is_subset(&all_positive) {
-            res += 1;};
+                res += 1;
+            };
         }
-
 
         Ok(res)
     }
@@ -62,20 +65,20 @@ fn main() -> Result<()> {
 
     fn part2<R: BufRead>(reader: R) -> Result<usize> {
         let all_negative: HashSet<i64> = HashSet::from_iter(vec![-1i64, -2, -3].into_iter());
-        let all_positive: HashSet<i64> = HashSet::from_iter(vec![1i64,2,3].into_iter());
+        let all_positive: HashSet<i64> = HashSet::from_iter(vec![1i64, 2, 3].into_iter());
         let mut res = 0;
         for line in parse(reader) {
-            let mut temp_count:usize = 0;
+            let mut temp_count: usize = 0;
             for i in 0..line.len() {
                 let mut line = line.clone();
                 line.remove(i);
-                let temp: HashSet<i64>= line.windows(2).map(|x| x[0]-x[1] ).collect();
+                let temp: HashSet<i64> = line.windows(2).map(|x| x[0] - x[1]).collect();
                 if temp.is_subset(&all_negative) | temp.is_subset(&all_positive) {
                     temp_count = 1;
                 }
             }
             res += temp_count;
-            temp_count=0;
+            temp_count = 0;
         }
         Ok(res)
     }
