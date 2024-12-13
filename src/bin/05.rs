@@ -90,10 +90,12 @@ fn main() -> Result<()> {
                 }
 
             });
+            let mut bad_updates = vec![];
             if b {
                 let t = (update.len()-1).checked_div(2).unwrap();
                 res+= update[t];
                }
+            else {bad_updates.push(update);}
         }
 
         Ok(res)
@@ -115,17 +117,37 @@ fn main() -> Result<()> {
     //endregion
 
     //region Part 2
-    // println!("\n=== Part 2 ===");
-    //
-    // fn part2<R: BufRead>(reader: R) -> Result<usize> {
-    //     Ok(0)
-    // }
-    //
-    // assert_eq!(0, part2(BufReader::new(TEST.as_bytes()))?);
-    //
-    // let input_file = BufReader::new(File::open(INPUT_FILE)?);
-    // let result = time_snippet!(part2(input_file)?);
-    // println!("Result = {}", result);
+    println!("\n=== Part 2 ===");
+
+    fn part2<R: BufRead>(reader: R) -> Result<usize> {
+        let rules = reader
+            .lines()
+            .flatten()
+            .map(|x| {
+                let temp = x.split("|").collect_vec();
+                let r1 = temp[0].parse::<usize>().expect("test");
+                let r2 = temp[1].parse::<usize>().expect("test");
+                (r1, r2)
+            })
+            .collect_vec();
+        let mut res = 0;
+        let updates = reader2
+            .lines()
+            .flatten()
+            .map(|x| {
+                x.split(",")
+                    .map(|x| x.parse::<usize>().expect("test"))
+                    .collect_vec()
+            })
+            .collect_vec();
+        Ok(0)
+    }
+
+    assert_eq!(, part2(BufReader::new(TEST.as_bytes()))?);
+
+    let input_file = BufReader::new(File::open(INPUT_FILE)?);
+    let result = time_snippet!(part2(input_file)?);
+    println!("Result = {}", result);
     //endregion
 
     Ok(())

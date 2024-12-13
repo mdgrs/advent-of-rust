@@ -1,13 +1,12 @@
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-};
-use std::cmp::min;
 use adv_code_2024::*;
 use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
-use itertools::Itertools;
+use std::cmp::min;
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+};
 
 const DAY: &str = "04"; // TODO: Fill the day
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
@@ -31,7 +30,7 @@ fn main() -> Result<()> {
     //region Part 1
     println!("=== Part 1 ===");
 
-    fn parse<R: BufRead>(reader: R) -> Result<Vec<Vec<char>>>{
+    fn parse<R: BufRead>(reader: R) -> Result<Vec<Vec<char>>> {
         // let res = reader.lines().flatten().map(|x| x.chars().collect()).collect();
         let mut res = Vec::new();
         for line in reader.lines().flatten() {
@@ -60,14 +59,14 @@ fn main() -> Result<()> {
         let nrows = board.len();
         let ncols = board[0].len();
         let mut starters = vec![];
-        for i in 0..nrows{
-            starters.push((i,0))
+        for i in 0..nrows {
+            starters.push((i, 0))
         }
-        for j in 1..ncols{
+        for j in 1..ncols {
             starters.push((0, j))
         }
         for starter in starters {
-            let size = min(nrows-starter.0-1, ncols-starter.1-1);
+            let size = min(nrows - starter.0 - 1, ncols - starter.1 - 1);
             if size > 2 {
                 let mut temp = vec![];
                 for i in 0..=size {
@@ -85,14 +84,14 @@ fn main() -> Result<()> {
         let nrows = board.len();
         let ncols = board[0].len();
         let mut starters = vec![];
-        for i in 0..nrows{
-            starters.push((i,0))
+        for i in 0..nrows {
+            starters.push((i, 0))
         }
-        for j in 1..ncols{
-            starters.push((nrows-1, j))
+        for j in 1..ncols {
+            starters.push((nrows - 1, j))
         }
         for starter in starters {
-            let size = min(starter.0, ncols-starter.1-1);
+            let size = min(starter.0, ncols - starter.1 - 1);
             if size > 2 {
                 let mut temp = vec![];
                 for i in 0..=size {
@@ -105,11 +104,16 @@ fn main() -> Result<()> {
         res
     }
 
-    fn count_occurences(row:&Vec<char>) -> usize {
-        let mut res = 0;
-        let a = row.windows(4).filter(|x| x.iter().zip("XMAS".chars()).all(|(a,b)| a == &b)).count();
-        let b = row.windows(4).filter(|x| x.iter().zip("SAMX".chars()).all(|(a,b)| a == &b)).count();
-        a+b
+    fn count_occurences(row: &Vec<char>) -> usize {
+        let a = row
+            .windows(4)
+            .filter(|x| x.iter().zip("XMAS".chars()).all(|(a, b)| a == &b))
+            .count();
+        let b = row
+            .windows(4)
+            .filter(|x| x.iter().zip("SAMX".chars()).all(|(a, b)| a == &b))
+            .count();
+        a + b
     }
 
     fn part1<R: BufRead>(reader: R) -> Result<usize> {
@@ -138,30 +142,38 @@ fn main() -> Result<()> {
     //region Part 2
     println!("\n=== Part 2 ===");
 
-    fn diag(i:usize, j:usize,board: &Vec<Vec<char>>) -> bool {
-        let positive = if (board[i-1][j+1] == 'S') & (board[i+1][j-1] == 'M') {
+    fn diag(i: usize, j: usize, board: &Vec<Vec<char>>) -> bool {
+        let positive = if (board[i - 1][j + 1] == 'S') & (board[i + 1][j - 1] == 'M') {
             true
-        } else if (board[i-1][j+1] == 'M') & (board[i+1][j-1] == 'S') {true}
-        else {false};
-        let negative = if (board[i-1][j-1] == 'S') & (board[i+1][j+1] == 'M') {
+        } else if (board[i - 1][j + 1] == 'M') & (board[i + 1][j - 1] == 'S') {
             true
-        } else if (board[i-1][j-1] == 'M') & (board[i+1][j+1] == 'S') {true}
-        else {false};
+        } else {
+            false
+        };
+        let negative = if (board[i - 1][j - 1] == 'S') & (board[i + 1][j + 1] == 'M') {
+            true
+        } else if (board[i - 1][j - 1] == 'M') & (board[i + 1][j + 1] == 'S') {
+            true
+        } else {
+            false
+        };
         positive & negative
     }
     fn part2<R: BufRead>(reader: R) -> Result<usize> {
-        let mut res =0;
+        let mut res = 0;
         let board = parse(reader).expect("bad parsing");
         let mut a_indices = vec![];
-        for i in 1..board.len()-1 {
-            for j in 1..board[0].len()-1 {
+        for i in 1..board.len() - 1 {
+            for j in 1..board[0].len() - 1 {
                 if board[i][j] == 'A' {
-                    a_indices.push((i,j));
+                    a_indices.push((i, j));
                 }
             }
         }
-        for (i,j) in a_indices {
-            if diag(i,j,&board) {res+=1}
+        for (i, j) in a_indices {
+            if diag(i, j, &board) {
+                res += 1
+            }
         }
 
         Ok(res)
